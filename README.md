@@ -30,7 +30,5 @@ This script work on both one-way mode and Hegde mode.
 5. FREEBALANCE	= Min balance for trade(Bot will Halted if FREEBALANCE < Equity)
 6. SECRET_KEY	= your passphrase form tradingview signal
 7. ORDER_ENABLE = "TRUE" = Enable Bots "FALSE" = Disable Bots
-# YouTube tutorial on how to use this code (Thai)
-https://youtu.be/t3AOdg9QPiI
 ### mod and dev by DR.AKN
 ### Compatible with VXD Cloud Edition Tradingview by Vaz
