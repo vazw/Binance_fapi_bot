@@ -25,14 +25,6 @@ import logging
 
 app = Flask(__name__)
 
-# API_KEY = str(os.environ['API_KEY'])
-# API_SECRET = str(os.environ['API_SECRET'])
-#TEST_NET = bool(str(os.environ['TEST_NET']))
-# LINE_TOKEN=str(os.environ['LINE_TOKEN'])
-# BOT_NAME=str(os.environ['BOT_NAME'])
-# FREEBALANCE=str(os.environ['FREEBALANCE'])
-# SECRET_KEY=str(os.environ['SECRET_KEY'])
-# ORDER_ENABLE=str(os.environ['ORDER_ENABLE'])
 #Self-Deploy version.
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -87,12 +79,16 @@ def webhook():
     percent=0    
     idl = 0
     ids = 0
+    Lside = 'BOTH'
+    Sside = 'BOTH'
     
     currentmode = client.futures_get_position_mode()
     if currentmode['dualSidePosition'] == True :
         print("Position mode: Hedge Mode")
         idl = 1
         ids = 2
+        Lside = 'LONG'
+        Sside = 'SHORT'
     else : print("Position mode: OneWay Mode")
     
     #trim PERP from symbol
@@ -177,7 +173,7 @@ def webhook():
             qty_close = abs(round(qty_close,qty_precision))
             leverage = float(client.futures_position_information(symbol=symbol)[ids]['leverage'])              
             entryP=float(client.futures_position_information(symbol=symbol)[ids]['entryPrice'])
-            close_SELL = client.futures_create_order(symbol=symbol, positionSide='SHORT', side='BUY', type='MARKET', quantity= qty_close)                        
+            close_SELL = client.futures_create_order(symbol=symbol, positionSide=Sside, side='BUY', type='MARKET', quantity= qty_close)                        
             logging.info(close_SELL)
             time.sleep(1)    
             #success close sell, push line notification                    
@@ -223,7 +219,7 @@ def webhook():
             qty_close = abs(round(qty_close,qty_precision))
             leverage = float(client.futures_position_information(symbol=symbol)[idl]['leverage'])  
             entryP=float(client.futures_position_information(symbol=symbol)[idl]['entryPrice'])
-            close_BUY = client.futures_create_order(symbol=symbol, positionSide='LONG', side='SELL', type='MARKET', quantity= qty_close)            
+            close_BUY = client.futures_create_order(symbol=symbol, positionSide=Lside, side='SELL', type='MARKET', quantity= qty_close)            
             logging.info(close_BUY)
             time.sleep(1)
             #success close sell, push line notification                    
@@ -261,7 +257,7 @@ def webhook():
         except :
             lev = float(client.futures_position_information(symbol=symbol)[idl]['leverage'])
         print('leverage : X',lev)
-        order_BUY = client.futures_create_order(symbol=symbol, positionSide='LONG', side='BUY', type='MARKET', quantity=Qty_buy)               
+        order_BUY = client.futures_create_order(symbol=symbol, positionSide=Lside, side='BUY', type='MARKET', quantity=Qty_buy)               
         logging.info(order_BUY)
         time.sleep(1)
         #get entry price to find margin value
@@ -300,7 +296,7 @@ def webhook():
         except :
             lev = float(client.futures_position_information(symbol=symbol)[ids]['leverage'])
         print('leverage : X',lev)
-        order_SELL = client.futures_create_order(symbol=symbol, positionSide='SHORT', side='SELL', type='MARKET', quantity=Qty_sell)
+        order_SELL = client.futures_create_order(symbol=symbol, positionSide=Sside, side='SELL', type='MARKET', quantity=Qty_sell)
         logging.info(order_SELL)
         time.sleep(1)
         #get entry price to find margin value
