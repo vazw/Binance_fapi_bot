@@ -1,6 +1,6 @@
 # tradingview-alert-webhook for binance-api (Future)
 TradingView Strategy Alert Webhook that buys and sells crypto with the Binance API
-This script work only on both one-way mode and Hegde mode.
+This script work on both one-way mode and Hegde mode.
 # Script is compatible with the follwing strategy message
 ##### passphrase should be = SECRET_KEY
 ##### Open Position can use "$20" or "@0.02" for determined size In my case I can use "@xxx" as VXD auto calculate size 
